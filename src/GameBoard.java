@@ -2,41 +2,93 @@ import java.util.*;
 
 public class GameBoard {
 	private int height, width, numShips;
-	private HashMap<String, Ship> gameBoard;
-	private int shipSize1, shipSize2, shipSize3;
+	private Ship[][] gameBoard;
+	private ArrayList<Integer> shipSizes;
+	private HashSet<String> shipNames;
 	
-	public GameBoard(int w, int h, int n){
+	// construct with int width, int height, int number of ships, int[] ship sizes, String[] ship names 
+	public GameBoard(int w, int h, int n, int[] sSizes, String[] sNames){
 		width = w;
 		height = h;
 		numShips = n;
-		gameBoard = new HashMap<String, Ship>();
-		// shipSize variables can be modified
-		shipSize1 = 3;
-		shipSize2 = 3;
-		shipSize3 = 3;
+		gameBoard = new Ship[height][width]; // height first because letters on vertical axis
+		shipSizes = new ArrayList<Integer>();
+		shipNames = new HashSet<String>();
+		// loop through given array of ship sizes and only keep the ones that can fit on the map
+		for (int i=0; i<sSizes.length; i++){
+			if (sSizes[i] < height && sSizes[i] < width){
+				shipSizes.add(sSizes[i]);
+			}
+		}
+		// add default length of 3 to ship sizes, default Dot Com names to shipNames
+		shipSizes.add(3);
+		shipNames.add("Go2.com");
+		shipNames.add("Pets.com");
+		shipNames.add("AskMe.com");
+		
 	}
 	
-	public boolean initializaBoard(){
+	// randomly place ships on the board
+	public boolean initializeBoard(){
 		int fails = 0;
 		int count = 0;
-		//String alphabet = "ABCDEFG";
-		// Vertical values first, using int (0 - 6) representation of char 'a to g' 
-		// Assign random value
-		while (count < numShips || fails < 30){
-			char first = (char) ((int) Math.floor(Math.random() * height) + 10); //adding 10 to convert to a letter
-			first = Character.toUpperCase(first);
-			int second = (int)Math.floor(Math.random() * width) + 1; //adding 1 to start at 1
-			String result = first + second + "";
+		
+		// Assign random value using 0 to height-1 as numeric representations of upper case letters
+		while (count < numShips || fails < 100){
+			int first = (int) Math.floor(Math.random() * height); // get number from 0 to height-1
+			int second = (int)Math.floor(Math.random() * width); // get random horizontal position
+			
+			//char first = (char)(f + 64); //convert to upper case letter equivalent
+			//String result = Character.toString(first) + second + "";
+			//String result = f + "," + second;
 			
 			// if position taken, add to fails and try again
-			if (gameBoard.containsKey(result)){
+			while (gameBoard[first][second] != null){
+				first = (int) Math.floor(Math.random() * height); // get number from 0 to height-1
+				second = (int)Math.floor(Math.random() * width); // get random horizontal position 0 to width -1
+				fails ++;
+			}
+			if (gameBoard[first][second] != null){
 				
+			}else{
+				// choose ship size randomly and choose alignment randomly
+				int index = (int) Math.floor(Math.random() * shipSizes.size());
+				if (Math.random() < 0.5){
+					//horizontal ship creatin / placement
+					setHorizontal(first, second, shipSizes.get(index));
+				}else{
+					//Vertical
+					setVertical(first, second, shipSizes.get(index));
+				}
+					
 			}
 		}
 		if (fails >= 30){
 			return false;
 		}
 		return true;
+	}
+	
+	private int[] numToInt(String arg){
+		String[] args = arg.split(",");
+		int[] result = {Integer.parseInt(args[0]), Integer.parseInt(args[1])};
+		return result;
+	}
+	
+	//take the starting vertical and horizontal coordinates and try neighbouring coordinates until enough space is found to match shipSize
+	private boolean setHorizontal(int sV, int sH, int sSize){
+		int left = sH;
+		int right = sH;
+		int fails = 0;
+		
+		while ()
+		
+		return false;
+	}
+	
+	private boolean setVertical(int sV, int sH, int sSize){
+		
+		return false;
 	}
 
 }
